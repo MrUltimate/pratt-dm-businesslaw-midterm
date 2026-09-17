@@ -17,8 +17,14 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   function toggle() {
     const next = !dark;
+    const root = document.documentElement;
+    root.classList.add("no-transition");
+    root.classList.toggle("dark", next);
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
+    // Two rAF calls ensure the class change paints before re-enabling transitions.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => root.classList.remove("no-transition")),
+    );
     try {
       window.localStorage.setItem(KEY, next ? "dark" : "light");
     } catch {

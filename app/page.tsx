@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Play, RotateCcw } from "lucide-react";
+import { Check, Play, RotateCcw } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -113,10 +113,17 @@ export default function StartPage() {
                     onClick={() => toggleChapter(ch)}
                     aria-pressed={on}
                     className={cn(
-                      "rounded-md border px-3 py-1.5 text-left text-sm transition-colors",
-                      on ? "border-primary bg-accent/60" : "hover:bg-secondary",
+                      "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-left text-sm transition-colors",
+                      on
+                        ? "border-primary bg-accent/60 text-foreground"
+                        : "border-dashed text-muted-foreground hover:border-foreground/40 hover:bg-secondary hover:text-foreground",
                     )}
                   >
+                    {on ? (
+                      <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+                    ) : (
+                      <span className="h-3.5 w-3.5 shrink-0 rounded-sm border border-current opacity-40" aria-hidden />
+                    )}
                     <span className="text-muted-foreground">Ch {ch}</span> {CHAPTERS[ch]}{" "}
                     <span className="nums text-muted-foreground">{counts[ch] ?? 0}</span>
                   </button>

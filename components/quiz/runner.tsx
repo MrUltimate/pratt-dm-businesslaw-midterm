@@ -17,22 +17,20 @@ import { cn, OPTION_LETTERS } from "@/lib/utils";
 
 export function Runner({ initial, title }: { initial: ActiveRun; title?: string }) {
   const [run, setRun] = useState<ActiveRun>(initial);
+  const runRef = useRef(initial);
   const [finished, setFinished] = useState<RunRecord | null>(null);
 
   const baseRef = useRef(initial.elapsedMs);
   const sessionStartRef = useRef(Date.now());
   const finalDurationRef = useRef<number | null>(null);
 
+  // Keep ref in sync so callbacks always read the latest run without stale closures.
+  runRef.current = run;
+
   const getElapsed = useCallback(() => {
     if (finalDurationRef.current !== null) return finalDurationRef.current;
     return baseRef.current + (Date.now() - sessionStartRef.current);
   }, []);
-
-  // Autosave so a refresh resumes where you left off. The clock pauses while away.
-  useEffect(() => {
-    if (finished) return;
-    saveActiveRun({ ...run, elapsedMs: getElapsed() });
-  }, [run, finished, getElapsed]);
 
   const total = run.items.length;
   const item = run.items[run.index];
@@ -43,12 +41,16 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
 
   const updateItem = useCallback(
     (index: number, patch: (prev: ActiveRun["items"][number]) => ActiveRun["items"][number]) => {
-      setRun((prev) => ({
+      const prev = runRef.current;
+      const next: ActiveRun = {
         ...prev,
         items: prev.items.map((it, i) => (i === index ? patch(it) : it)),
-      }));
+      };
+      runRef.current = next;
+      setRun(next);
+      saveActiveRun({ ...next, elapsedMs: getElapsed() });
     },
-    [],
+    [getElapsed],
   );
 
   const toggle = useCallback(
@@ -70,9 +72,13 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
   );
 
   const goTo = useCallback((index: number) => {
-    setRun((prev) => ({ ...prev, index: Math.max(0, Math.min(prev.items.length - 1, index)) }));
+    const prev = runRef.current;
+    const next: ActiveRun = { ...prev, index: Math.max(0, Math.min(prev.items.length - 1, index)) };
+    runRef.current = next;
+    setRun(next);
+    saveActiveRun({ ...next, elapsedMs: getElapsed() });
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [getElapsed]);
 
   const markVisited = useCallback(() => {
     updateItem(run.index, (prev) => ({ ...prev, visited: true }));
@@ -216,15 +222,17 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
 
       <Card>
         <CardContent className="p-5 sm:p-6">
-          <QuestionCard
-            question={question}
-            order={item.order}
-            selected={item.selected}
-            revealed={revealed}
-            number={run.index + 1}
-            total={total}
-            onToggle={toggle}
-          />
+          <div key={run.index} className="animate-fade-up">
+            <QuestionCard
+              question={question}
+              order={item.order}
+              selected={item.selected}
+              revealed={revealed}
+              number={run.index + 1}
+              total={total}
+              onToggle={toggle}
+            />
+          </div>
         </CardContent>
       </Card>
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Runner } from "@/components/quiz/runner";
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 type State = { kind: "loading" } | { kind: "ready"; run: ActiveRun; title?: string } | { kind: "error"; message: string };
 
 export function PracticeClient() {
+  const router = useRouter();
   const params = useSearchParams();
   const isNew = params.get("new") === "1";
   const retryId = params.get("retry");
@@ -34,6 +35,8 @@ export function PracticeClient() {
         return;
       }
       setState({ kind: "ready", run, title: "Redo: questions you missed" });
+      // Strip query params so a reload resumes this run rather than re-creating it.
+      router.replace("/practice", { scroll: false });
       return;
     }
 
@@ -46,8 +49,9 @@ export function PracticeClient() {
     }
 
     setState({ kind: "ready", run: buildRun(settings) });
-    // Intentionally keyed only on the query string: a run is built once per visit.
-  }, [isNew, retryId]);
+    // Strip ?new=1 so a reload resumes rather than starting another new run.
+    router.replace("/practice", { scroll: false });
+  }, [isNew, retryId, router]);
 
   if (state.kind === "loading") {
     return <p className="text-sm text-muted-foreground">Dealing the questions&hellip;</p>;
