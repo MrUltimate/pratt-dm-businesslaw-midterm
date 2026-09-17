@@ -32,6 +32,8 @@ export function ThemeToggle({ className }: { className?: string }) {
     }
   }
 
+  const easing = "cubic-bezier(0.2, 0, 0, 1)";
+
   return (
     <button
       type="button"
@@ -39,15 +41,30 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       title={dark ? "Light mode" : "Dark mode"}
       className={cn(
-        "grid h-9 w-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+        "relative grid h-9 w-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
         className,
       )}
     >
-      {mounted && dark ? (
-        <Sun className="h-4 w-4" aria-hidden />
-      ) : (
-        <Moon className="h-4 w-4" aria-hidden />
-      )}
+      <Moon
+        className="h-4 w-4"
+        style={{
+          opacity: mounted && dark ? 0 : 1,
+          scale: mounted && dark ? "0.25" : "1",
+          filter: mounted && dark ? "blur(4px)" : "blur(0px)",
+          transition: mounted ? `opacity 0.2s ${easing}, scale 0.2s ${easing}, filter 0.2s ${easing}` : "none",
+        }}
+        aria-hidden
+      />
+      <Sun
+        className="absolute h-4 w-4"
+        style={{
+          opacity: mounted && dark ? 1 : 0,
+          scale: mounted && dark ? "1" : "0.25",
+          filter: mounted && dark ? "blur(0px)" : "blur(4px)",
+          transition: mounted ? `opacity 0.2s ${easing}, scale 0.2s ${easing}, filter 0.2s ${easing}` : "none",
+        }}
+        aria-hidden
+      />
     </button>
   );
 }

@@ -295,7 +295,7 @@ export function Results({ run, heading }: { run: RunRecord; heading?: string }) 
             href={`/practice?retry=${run.id}`}
             className={cn(buttonVariants({ variant: "outline" }))}
           >
-            Redo the {missedCount} you didn&apos;t get
+            Retry the {missedCount} you missed
           </Link>
         )}
         <Link href="/history" className={cn(buttonVariants({ variant: "ghost" }))}>

@@ -68,7 +68,7 @@ export default function StartPage() {
     <div className="space-y-8">
       <section>
         <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-          Questions, one clock, then the damage report.
+          {runLength === 1 ? "1 question" : `${runLength} questions`}, one clock, then the score.
         </h1>
         <p className="mt-3 max-w-reading text-[15px] text-muted-foreground">
           {QUESTIONS.length} multiple-choice questions drawn from Chapters 1&ndash;5. Some have more
@@ -134,8 +134,8 @@ export default function StartPage() {
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
               {settings.level === "easy"
-                ? "Questions that directly mirror Elliot’s example questions"
-                : "Harder questions derived from all 5 chapters that test your knowledge"}
+                ? "Questions that directly mirror the professor’s example questions"
+                : "Harder questions drawn from all 5 chapters that test your knowledge"}
             </p>
           </div>
 

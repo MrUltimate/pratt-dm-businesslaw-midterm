@@ -241,18 +241,18 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
 
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="outline" onClick={() => goTo(run.index - 1)} disabled={run.index === 0}>
-          <ArrowLeft className="h-4 w-4" aria-hidden />
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden />
           Previous
           <Kbd>&larr;</Kbd>
         </Button>
         <Button variant="ghost" onClick={skip}>
-          <SkipForward className="h-4 w-4" aria-hidden />
+          <SkipForward className="h-4 w-4" strokeWidth={1.5} aria-hidden />
           Skip
           <Kbd>S</Kbd>
         </Button>
         <Button className="ml-auto" onClick={primaryAction}>
           {primaryLabel}
-          {primaryLabel === "Next" && <ArrowRight className="h-4 w-4" aria-hidden />}
+          {primaryLabel === "Next" && <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden />}
           <Kbd tone="onPrimary">Enter</Kbd>
         </Button>
         {!isLast && (
@@ -287,7 +287,7 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
                 aria-label={`Question ${i + 1}${answered ? ", answered" : it.visited ? ", skipped" : ""}`}
                 aria-current={current ? "true" : undefined}
                 className={cn(
-                  "nums h-7 w-7 rounded-md border text-xs transition-colors",
+                  "nums h-8 w-8 rounded-md border text-xs transition-colors",
                   answered && "border-foreground/40 bg-accent text-accent-foreground",
                   !answered && it.visited && "border-warn/60 text-warn",
                   !answered && !it.visited && "text-muted-foreground hover:bg-secondary",
