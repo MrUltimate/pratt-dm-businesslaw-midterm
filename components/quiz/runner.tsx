@@ -19,6 +19,7 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
   const [run, setRun] = useState<ActiveRun>(initial);
   const runRef = useRef(initial);
   const [finished, setFinished] = useState<RunRecord | null>(null);
+  const [slideDir, setSlideDir] = useState<"left" | "right">("right");
 
   const baseRef = useRef(initial.elapsedMs);
   const sessionStartRef = useRef(Date.now());
@@ -73,7 +74,9 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
 
   const goTo = useCallback((index: number) => {
     const prev = runRef.current;
-    const next: ActiveRun = { ...prev, index: Math.max(0, Math.min(prev.items.length - 1, index)) };
+    const clampedIndex = Math.max(0, Math.min(prev.items.length - 1, index));
+    setSlideDir(clampedIndex >= prev.index ? "right" : "left");
+    const next: ActiveRun = { ...prev, index: clampedIndex };
     runRef.current = next;
     setRun(next);
     saveActiveRun({ ...next, elapsedMs: getElapsed() });
@@ -220,9 +223,9 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
         <Progress value={(answeredCount / total) * 100} className="mt-2.5" label="Run progress" />
       </div>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardContent className="p-5 sm:p-6">
-          <div key={run.index} className="animate-fade-up">
+          <div key={run.index} className={slideDir === "right" ? "animate-slide-from-right" : "animate-slide-from-left"}>
             <QuestionCard
               question={question}
               order={item.order}
