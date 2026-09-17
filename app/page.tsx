@@ -20,7 +20,7 @@ import {
 import { CHAPTERS, type ChapterId, type RunRecord, type RunSettings } from "@/lib/types";
 import { cn, formatDate, formatDuration, formatPct } from "@/lib/utils";
 
-const RUN_SIZE = 50;
+const MAX_RUN_SIZE = 50;
 const CHAPTER_IDS: ChapterId[] = [1, 2, 3, 4, 5];
 
 export default function StartPage() {
@@ -39,10 +39,10 @@ export default function StartPage() {
 
   const counts = countByChapter();
   const pool = QUESTIONS.filter((q) => settings.chapters.includes(q.ch)).length;
-  const runLength = Math.min(RUN_SIZE, pool);
+  const runLength = Math.min(settings.count, pool);
 
   function update(patch: Partial<RunSettings>) {
-    const next = { ...settings, ...patch, count: RUN_SIZE };
+    const next = { ...settings, ...patch };
     setSettings(next);
     saveSettings(next);
   }
@@ -65,7 +65,7 @@ export default function StartPage() {
     <div className="space-y-8">
       <section>
         <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-          Fifty questions, one clock, then the damage report.
+          Questions, one clock, then the damage report.
         </h1>
         <p className="mt-3 max-w-reading text-[15px] text-muted-foreground">
           {QUESTIONS.length} multiple-choice questions drawn from Chapters 1&ndash;5. Some have more
@@ -124,9 +124,33 @@ export default function StartPage() {
               })}
             </div>
             <p className="mt-2 text-xs text-muted-foreground nums">
-              {pool} questions in the pool · this run will ask {runLength}
-              {runLength < RUN_SIZE && " (the whole pool)"}
+              {pool} questions in the pool
             </p>
+          </div>
+
+          <div>
+            <div className="flex items-baseline justify-between">
+              <p className="text-sm font-medium">Questions per run</p>
+              <span className="nums text-sm font-semibold tabular-nums">
+                {runLength}
+                {runLength < settings.count && (
+                  <span className="ml-1 text-xs font-normal text-muted-foreground">(pool limit)</span>
+                )}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={MAX_RUN_SIZE}
+              value={settings.count}
+              onChange={(e) => update({ count: Number(e.target.value) })}
+              className="mt-2 w-full accent-primary"
+              aria-label="Number of questions"
+            />
+            <div className="mt-1 flex justify-between text-xs text-muted-foreground nums">
+              <span>1</span>
+              <span>{MAX_RUN_SIZE}</span>
+            </div>
           </div>
 
           <div className="space-y-3 border-t pt-5">
@@ -160,7 +184,7 @@ export default function StartPage() {
 
           <Button size="lg" onClick={start} disabled={!ready}>
             <Play className="h-4 w-4" aria-hidden />
-            Start a {runLength}-question run
+            Start {runLength}-question run
           </Button>
         </CardContent>
       </Card>

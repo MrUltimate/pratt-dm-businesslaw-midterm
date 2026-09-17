@@ -78,9 +78,11 @@ export const DEFAULT_SETTINGS: RunSettings = {
 
 export function loadSettings(): RunSettings {
   const s = read<RunSettings>(SETTINGS_KEY, DEFAULT_SETTINGS);
+  const count = Math.min(50, Math.max(1, s.count ?? DEFAULT_SETTINGS.count));
   return {
     ...DEFAULT_SETTINGS,
     ...s,
+    count,
     chapters: s.chapters?.length ? s.chapters : DEFAULT_SETTINGS.chapters,
   };
 }
