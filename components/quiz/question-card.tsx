@@ -125,7 +125,7 @@ export function QuestionCard({
               aria-pressed={selected.includes(canonicalIndex)}
               className={cn(
                 "flex w-full items-start gap-3 rounded-md border px-3 py-2.5 text-left text-[15px] leading-normal transition-colors",
-                !revealed && "active:scale-[0.96] transition-[colors,transform,opacity]",
+                !revealed && "active:scale-[0.97] transition-[colors,transform]",
                 stateStyles[state],
                 revealed && "cursor-default",
               )}

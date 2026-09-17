@@ -75,7 +75,8 @@ function ReviewRow({ g, index }: { g: GradedItem; index: number }) {
           {STATUS_LABEL[g.status]}
         </Badge>
         <ChevronDown
-          className={cn("mt-0.5 h-4 w-4 text-muted-foreground transition-transform duration-200", open && "rotate-180")}
+          className={cn("mt-0.5 h-4 w-4 text-muted-foreground", open && "rotate-180")}
+          style={{ transition: "transform 200ms cubic-bezier(0.23, 1, 0.32, 1)" }}
           aria-hidden
         />
       </button>

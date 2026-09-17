@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    /* Strong ease-out for UI interactions (Emil Kowalski) */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     /* Neutral gray scale. Semantic colors are reserved for answer feedback. */
     --background: 0 0% 98%;
     --foreground: 0 0% 9%;
@@ -119,11 +121,11 @@
 }
 
 .animate-slide-from-right {
-  animation: slide-from-right 0.2s ease-out both;
+  animation: slide-from-right 0.2s var(--ease-out) both;
 }
 
 .animate-slide-from-left {
-  animation: slide-from-left 0.2s ease-out both;
+  animation: slide-from-left 0.2s var(--ease-out) both;
 }
 
 /* Prevents jarring color transitions during theme switch. */

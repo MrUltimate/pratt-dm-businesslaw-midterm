@@ -287,7 +287,7 @@ export function Runner({ initial, title }: { initial: ActiveRun; title?: string 
                 aria-label={`Question ${i + 1}${answered ? ", answered" : it.visited ? ", skipped" : ""}`}
                 aria-current={current ? "true" : undefined}
                 className={cn(
-                  "nums h-8 w-8 rounded-md border text-xs transition-colors",
+                  "nums h-8 w-8 rounded-md border text-xs transition-[colors,transform] active:scale-[0.97]",
                   answered && "border-foreground/40 bg-accent text-accent-foreground",
                   !answered && it.visited && "border-warn/60 text-warn",
                   !answered && !it.visited && "text-muted-foreground hover:bg-secondary",

@@ -116,7 +116,7 @@ export default function StartPage() {
                     onClick={() => update({ level: lvl })}
                     aria-pressed={active}
                     className={cn(
-                      "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors",
+                      "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-[colors,transform] active:scale-[0.97]",
                       active
                         ? "border-primary bg-accent/60 text-foreground"
                         : "border-dashed text-muted-foreground hover:border-foreground/40 hover:bg-secondary hover:text-foreground",
@@ -151,7 +151,7 @@ export default function StartPage() {
                     onClick={() => toggleChapter(ch)}
                     aria-pressed={on}
                     className={cn(
-                      "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-left text-sm transition-colors",
+                      "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-left text-sm transition-[colors,transform] active:scale-[0.97]",
                       on
                         ? "border-primary bg-accent/60 text-foreground"
                         : "border-dashed text-muted-foreground hover:border-foreground/40 hover:bg-secondary hover:text-foreground",
