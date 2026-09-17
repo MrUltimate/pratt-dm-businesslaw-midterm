@@ -18,6 +18,7 @@ export type Question = {
   o: string[];
   a: number[];
   e: string;
+  level?: QuestionLevel;
 };
 
 export const CHAPTERS: Record<ChapterId, string> = {
@@ -27,6 +28,8 @@ export const CHAPTERS: Record<ChapterId, string> = {
   4: "The Constitution and Business Regulation",
   5: "Tort Law",
 };
+
+export type QuestionLevel = "easy" | "hard";
 
 export type AnswerStatus = "correct" | "partial" | "incorrect" | "skipped";
 
@@ -46,6 +49,7 @@ export type RunSettings = {
   chapters: ChapterId[];
   immediateFeedback: boolean;
   shuffleOptions: boolean;
+  level: QuestionLevel;
 };
 
 export type RunRecord = {

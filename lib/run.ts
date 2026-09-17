@@ -1,14 +1,18 @@
-import { QUESTIONS } from "@/data/questions";
+import { EASY_QUESTIONS, QUESTIONS } from "@/data/questions";
 import { gradeItem } from "./scoring";
 import type { ActiveRun, RunItem, RunRecord, RunSettings } from "./types";
 import { shuffle } from "./utils";
 
-export function availableCount(chapters: number[]): number {
-  return QUESTIONS.filter((q) => chapters.includes(q.ch)).length;
+function poolFor(settings: RunSettings) {
+  return settings.level === "easy" ? EASY_QUESTIONS : QUESTIONS;
+}
+
+export function availableCount(settings: RunSettings): number {
+  return poolFor(settings).filter((q) => settings.chapters.includes(q.ch)).length;
 }
 
 export function buildRun(settings: RunSettings): ActiveRun {
-  const pool = QUESTIONS.filter((q) => settings.chapters.includes(q.ch));
+  const pool = poolFor(settings).filter((q) => settings.chapters.includes(q.ch));
   const picked = shuffle(pool).slice(0, Math.min(settings.count, pool.length));
 
   const items: RunItem[] = picked.map((q) => {
@@ -40,7 +44,9 @@ export function buildRetryRun(previous: RunRecord, settings: RunSettings): Activ
     })
     .filter((id): id is string => id !== null);
 
-  const picked = shuffle(QUESTIONS.filter((q) => ids.includes(q.id)));
+  // Search both banks so retries work regardless of which level the original run used.
+  const allQuestions = [...QUESTIONS, ...EASY_QUESTIONS];
+  const picked = shuffle(allQuestions.filter((q) => ids.includes(q.id)));
 
   const items: RunItem[] = picked.map((q) => {
     const canonical = q.o.map((_, i) => i);

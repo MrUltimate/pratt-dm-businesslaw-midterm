@@ -7,7 +7,7 @@ import { Check, Play, RotateCcw } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { countByChapter, QUESTIONS } from "@/data/questions";
+import { countByChapter, easyCountByChapter, EASY_QUESTIONS, QUESTIONS } from "@/data/questions";
 import { analyzeRun } from "@/lib/scoring";
 import {
   clearActiveRun,
@@ -17,7 +17,7 @@ import {
   loadSettings,
   saveSettings,
 } from "@/lib/storage";
-import { CHAPTERS, type ChapterId, type RunRecord, type RunSettings } from "@/lib/types";
+import { CHAPTERS, type ChapterId, type QuestionLevel, type RunRecord, type RunSettings } from "@/lib/types";
 import { cn, formatDate, formatDuration, formatPct } from "@/lib/utils";
 
 const MAX_RUN_SIZE = 50;
@@ -37,8 +37,11 @@ export default function StartPage() {
     setReady(true);
   }, []);
 
-  const counts = countByChapter();
-  const pool = QUESTIONS.filter((q) => settings.chapters.includes(q.ch)).length;
+  const hardCounts = countByChapter();
+  const easyCounts = easyCountByChapter();
+  const counts = settings.level === "easy" ? easyCounts : hardCounts;
+  const bank = settings.level === "easy" ? EASY_QUESTIONS : QUESTIONS;
+  const pool = bank.filter((q) => settings.chapters.includes(q.ch)).length;
   const runLength = Math.min(settings.count, pool);
 
   function update(patch: Partial<RunSettings>) {
@@ -102,6 +105,41 @@ export default function StartPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
+            <p className="text-sm font-medium">Mode</p>
+            <div className="mt-2.5 flex gap-2">
+              {(["easy", "hard"] as QuestionLevel[]).map((lvl) => {
+                const active = settings.level === lvl;
+                return (
+                  <button
+                    key={lvl}
+                    type="button"
+                    onClick={() => update({ level: lvl })}
+                    aria-pressed={active}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors",
+                      active
+                        ? "border-primary bg-accent/60 text-foreground"
+                        : "border-dashed text-muted-foreground hover:border-foreground/40 hover:bg-secondary hover:text-foreground",
+                    )}
+                  >
+                    {active ? (
+                      <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+                    ) : (
+                      <span className="h-3.5 w-3.5 shrink-0 rounded-sm border border-current opacity-40" aria-hidden />
+                    )}
+                    {lvl === "easy" ? "Easy" : "Hard"}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {settings.level === "easy"
+                ? "Questions that directly mirror Elliot’s example questions"
+                : "Harder questions derived from all 5 chapters that test your knowledge"}
+            </p>
+          </div>
+
+          <div className="border-t pt-5">
             <p className="text-sm font-medium">Chapters to draw from</p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {CHAPTER_IDS.map((ch) => {

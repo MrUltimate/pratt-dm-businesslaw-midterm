@@ -74,15 +74,18 @@ export const DEFAULT_SETTINGS: RunSettings = {
   chapters: [1, 2, 3, 4, 5],
   immediateFeedback: false,
   shuffleOptions: true,
+  level: "hard",
 };
 
 export function loadSettings(): RunSettings {
   const s = read<RunSettings>(SETTINGS_KEY, DEFAULT_SETTINGS);
   const count = Math.min(50, Math.max(1, s.count ?? DEFAULT_SETTINGS.count));
+  const level = s.level === "easy" || s.level === "hard" ? s.level : "hard";
   return {
     ...DEFAULT_SETTINGS,
     ...s,
     count,
+    level,
     chapters: s.chapters?.length ? s.chapters : DEFAULT_SETTINGS.chapters,
   };
 }
