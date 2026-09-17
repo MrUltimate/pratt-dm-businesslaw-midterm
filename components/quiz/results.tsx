@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Check, Minus, X } from "lucide-react";
+import { Check, ChevronDown, Minus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,6 +73,10 @@ function ReviewRow({ g, index }: { g: GradedItem; index: number }) {
         <Badge variant={statusBadge[g.status]} className="mt-0.5 shrink-0">
           {STATUS_LABEL[g.status]}
         </Badge>
+        <ChevronDown
+          className={cn("mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200", open && "rotate-180")}
+          aria-hidden
+        />
       </button>
 
       {open && (
