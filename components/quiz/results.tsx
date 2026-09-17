@@ -65,16 +65,17 @@ function ReviewRow({ g, index }: { g: GradedItem; index: number }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-start gap-3 text-left"
+        className="grid w-full items-start gap-x-3 text-left"
+        style={{ gridTemplateColumns: "1.5rem 1fr auto 1rem" }}
         aria-expanded={open}
       >
-        <span className="nums w-6 shrink-0 pt-0.5 text-xs text-muted-foreground">{index + 1}.</span>
-        <span className="max-w-reading flex-1 text-[15px] font-medium leading-snug">{q.q}</span>
-        <Badge variant={statusBadge[g.status]} className="mt-0.5 shrink-0">
+        <span className="nums pt-0.5 text-xs text-muted-foreground">{index + 1}.</span>
+        <span className="text-[15px] font-medium leading-snug">{q.q}</span>
+        <Badge variant={statusBadge[g.status]} className="mt-0.5">
           {STATUS_LABEL[g.status]}
         </Badge>
         <ChevronDown
-          className={cn("mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200", open && "rotate-180")}
+          className={cn("mt-0.5 h-4 w-4 text-muted-foreground transition-transform duration-200", open && "rotate-180")}
           aria-hidden
         />
       </button>
